@@ -16,6 +16,7 @@
 @==============================================@
 """
 import torch
+import numpy as np
 
 x = torch.ones(2, 2, requires_grad=True)
 print(x)
@@ -58,3 +59,17 @@ print((x ** 2).requires_grad)
 
 with torch.no_grad():
     print((x ** 2).requires_grad)
+
+
+print()
+y_pred = torch.from_numpy(np.arange(0.1, 1, 0.1).reshape((3,3)))
+y_pred.requires_grad_(True)
+print(y_pred)
+y_true = torch.tensor([0,0,0,0,1,1,0,1,1], dtype=torch.double, requires_grad=True).reshape((3,3))
+print(y_true)
+
+dice_loss = 1 - (2 * (y_pred * y_true).sum() / (y_pred.sum() + y_true.sum()))
+print(dice_loss)
+
+dice_loss.backward()
+print(y_pred.grad)
